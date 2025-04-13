@@ -5,13 +5,12 @@
 #include "slice.h"
 
 int main() {
-    slice *slc = init_slice();
+    slice *slc1 = init_slice();
+    slice *slc2 = init_slice();
 
-    for (int i = 0; i < 10; i++) {
-        add_element(slc, i + i);
-    }
+    slice *slc3 = concat(slc1, slc2);
 
-    printf("index: 2, val: %d \n", *at(slc, 69));
+    print_slice(slc3);
 
     return EXIT_SUCCESS;
 }

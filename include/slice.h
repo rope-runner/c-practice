@@ -21,4 +21,6 @@ int index_of(slice *, int);
 
 int *at(slice *, int);
 
+slice *concat(slice *, slice *);
+
 #endif

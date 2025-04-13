@@ -114,9 +114,36 @@ int *at(slice *slc, int index) {
     return &(slc->data)[index];
 }
 
+/**
+ * concats 2 slice, by creating new one
+ * preserver order like [...dst_f, ...dst_s]
+ * in case of failure return null pointer
+ * */
+slice *concat(slice *dst_f, slice *dst_s) {
+    slice *new = (slice *) malloc(sizeof(slice));
+
+    if (new == NULL) {
+        return NULL;
+    }
+
+    new->len = (dst_f->len) + (dst_s->len);
+    new->capacity = new->len;
+    new->data = malloc(sizeof(int) * new->len);
+
+    for (size_t i = 0; i < dst_f->len; i++) {
+        (new->data)[i] = (dst_f->data)[i];
+    }
+
+    for (size_t i = dst_f->len; i < ((dst_s->len) + dst_f->len); i++) {
+        (new->data)[i] = (dst_s->data)[i - dst_f->len];
+    }
+
+    return new;
+}
+
 void print_slice(slice *slc) {
     if (slc->len == 0) {
-        printf("array is empty. \n");
+        printf("slice is empty. \n");
         return;
     }
 
