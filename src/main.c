@@ -9,19 +9,17 @@ int main() {
 
     print_array(arr);
 
-    if (add_element(arr, 12) == 0) printf("added 12 \n");
-    if (add_element(arr, 122) == 0) printf("added 122 \n");
+    add_element(arr, 1);
+    add_element(arr, 2);
+    add_element(arr, 3);
+    add_element(arr, 4);
+    add_element(arr, 5);
+    add_element(arr, 6);
+    add_element(arr, 7);
 
     print_array(arr);
 
-
-    remove_element(arr, 12);
-
-    print_array(arr);
-
-
-    remove_element(arr, 0);
-
+    add_element(arr, 8);
     print_array(arr);
 
     return EXIT_SUCCESS;

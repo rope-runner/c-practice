@@ -3,13 +3,18 @@
 #include <stdio.h>
 #include "slice.h"
 
+static size_t DEFAULT_SLICE_SIZE = 10;
+static float GROWTH_LIMIT = 0.8;
+static size_t BASE_GROWTH_FACTOR = 2;
+
 /**
  * return pointer to empty slice
  */
 slice *init_array() {
     slice *slc = (slice *) malloc(sizeof(slice));
     slc->len = 0;
-    slc->data = (int *) malloc(sizeof(int) * 0);
+    slc->data = (int *) malloc(sizeof(int) * DEFAULT_SLICE_SIZE);
+    slc->capacity = DEFAULT_SLICE_SIZE;
 
     return slc;
 }
@@ -23,20 +28,37 @@ slice *init_array() {
  * return int - 0 for success, 1 - for failure
  */
 int add_element(slice *slc, int element) {
-    int *new = (int *) realloc(slc->data, sizeof(int) * (slc->len + 1));
+    if ((slc->capacity * GROWTH_LIMIT) > (float) (slc->len + 1)) {
+        (slc->data)[slc->len] = element;
+        slc->len++;
 
-    if (new == NULL) {
-        printf("failed to allocate memory for new element");
-        return 1;
+        return 0;
+    } else {
+        int *new = (int *) realloc(slc->data, sizeof(int) * (slc->capacity * BASE_GROWTH_FACTOR));
+
+        if (new == NULL) {
+            printf("add failed: failed to reallocate buffer. \n");
+
+            return 1;
+        }
+
+        slc->capacity = (slc->capacity) * BASE_GROWTH_FACTOR;
+        slc->data = new;
+        (slc->data)[slc->len] = element;
+        slc->len++;
+
+        return 0;
     }
-
-    slc->data = new;
-    (slc->data)[slc->len] = element;
-    slc->len++;
-
-    return 0;
 }
 
+/**
+ * remove element from the slice
+ *
+ * slice *slc - target slice
+ * size_t index - element to add
+ * 
+ * return int - 0 for success, 1 - for failure
+ */
 int remove_element(slice *slc, size_t index) {
     if (index > (slc->len - 1)) {
         printf("index out of boundaries \n");
