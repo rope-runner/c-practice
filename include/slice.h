@@ -17,4 +17,8 @@ slice *init_slice(void);
 
 int remove_element(slice *, size_t);
 
+int index_of(slice *, int);
+
+int *at(slice *, int);
+
 #endif

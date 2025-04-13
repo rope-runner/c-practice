@@ -89,6 +89,31 @@ int remove_element(slice *slc, size_t index) {
     return 0;
 }
 
+/**
+ * returns index of given element, or -1
+ */
+int index_of(slice *slc, int element) {
+    printf("len: %lu \n", slc->len);
+    for (size_t i = 0; i < slc->len; i++) {
+        if ((slc->data)[i] == element) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+/**
+ * returns pointer to element at index or null pointer
+ * */
+int *at(slice *slc, int index) {
+    if (index < 0 || (size_t)index > slc->len) {
+        return NULL;
+    }
+
+    return &(slc->data)[index];
+}
+
 void print_slice(slice *slc) {
     if (slc->len == 0) {
         printf("array is empty. \n");
