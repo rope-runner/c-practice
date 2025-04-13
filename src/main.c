@@ -5,22 +5,22 @@
 #include "slice.h"
 
 int main() {
-    slice *arr = init_array();
+    slice *slc = init_slice();
 
-    print_array(arr);
+    print_slice(slc);
 
-    add_element(arr, 1);
-    add_element(arr, 2);
-    add_element(arr, 3);
-    add_element(arr, 4);
-    add_element(arr, 5);
-    add_element(arr, 6);
-    add_element(arr, 7);
+    add_element(slc, 1);
+    add_element(slc, 2);
+    add_element(slc, 3);
+    add_element(slc, 4);
+    add_element(slc, 5);
+    add_element(slc, 6);
+    add_element(slc, 7);
 
-    print_array(arr);
+    print_slice(slc);
 
-    add_element(arr, 8);
-    print_array(arr);
+    add_element(slc, 8);
+    print_slice(slc);
 
     return EXIT_SUCCESS;
 }

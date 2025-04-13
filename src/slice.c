@@ -10,7 +10,7 @@ static float SHRINK_FACTOR = 0.7;
 /**
  * return pointer to empty slice
  */
-slice *init_array() {
+slice *init_slice() {
     slice *slc = (slice *) malloc(sizeof(slice));
     slc->len = 0;
     slc->data = (int *) malloc(sizeof(int) * DEFAULT_SLICE_SIZE);
@@ -22,7 +22,7 @@ slice *init_array() {
 /**
  * add element to the slice
  *
- * slice *arr - target slice
+ * slice *slc - target slice
  * int element - element to add
  * 
  * return int - 0 for success, 1 - for failure
@@ -89,7 +89,7 @@ int remove_element(slice *slc, size_t index) {
     return 0;
 }
 
-void print_array(slice *slc) {
+void print_slice(slice *slc) {
     if (slc->len == 0) {
         printf("array is empty. \n");
         return;

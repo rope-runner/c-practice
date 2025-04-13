@@ -11,9 +11,9 @@ typedef struct slice {
 
 int add_element(slice *, int);
 
-void print_array(slice *);
+void print_slice(slice *);
 
-slice *init_array(void);
+slice *init_slice(void);
 
 int remove_element(slice *, size_t);
 
