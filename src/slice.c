@@ -4,8 +4,8 @@
 #include "slice.h"
 
 static size_t DEFAULT_SLICE_SIZE = 10;
-static float GROWTH_LIMIT = 0.8;
 static size_t BASE_GROWTH_FACTOR = 2;
+static float SHRINK_FACTOR = 0.7;
 
 /**
  * return pointer to empty slice
@@ -28,7 +28,7 @@ slice *init_array() {
  * return int - 0 for success, 1 - for failure
  */
 int add_element(slice *slc, int element) {
-    if ((slc->capacity * GROWTH_LIMIT) > (float) (slc->len + 1)) {
+    if ((slc->capacity) > (float) (slc->len + 1)) {
         (slc->data)[slc->len] = element;
         slc->len++;
 
@@ -70,17 +70,22 @@ int remove_element(slice *slc, size_t index) {
         (slc->data)[i] = (slc->data)[i+1];
     }
 
-    int *new = (int *) realloc(slc->data, sizeof(int) * (slc->len - 1));
+    if ((slc->len - 1) < (slc->capacity * SHRINK_FACTOR)) {
+        int *new = (int *) realloc(slc->data, sizeof(int) * (slc->len - 1));
 
-    if (new == NULL) {
-        printf("failed to reallocate buffer \n");
+        if (new == NULL) {
+            printf("failed to reallocate buffer \n");
 
-        return 1;
+            return 1;
+        }
+
+        slc->capacity = (slc->len) - 1;
+        slc->data = new;
+    } else {
+        (slc->data)[slc->len - 1] = 0;
     }
 
-    slc->data = new;
     slc->len--;
-
     return 0;
 }
 
