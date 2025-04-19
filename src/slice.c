@@ -11,9 +11,9 @@ static float SHRINK_FACTOR = 0.7;
  * return pointer to empty slice
  */
 slice *init_slice() {
-    slice *slc = (slice *) malloc(sizeof(slice));
+    slice *slc = malloc(sizeof(*slc));
     slc->len = 0;
-    slc->data = (int *) malloc(sizeof(int) * DEFAULT_SLICE_SIZE);
+    slc->data = malloc(sizeof(int) * DEFAULT_SLICE_SIZE);
     slc->capacity = DEFAULT_SLICE_SIZE;
 
     return slc;
@@ -34,7 +34,7 @@ int add_element(slice *slc, int element) {
 
         return 0;
     } else {
-        int *new = (int *) realloc(slc->data, sizeof(int) * (slc->capacity * BASE_GROWTH_FACTOR));
+        int *new = realloc(slc->data, sizeof(*new) * (slc->capacity * BASE_GROWTH_FACTOR));
 
         if (new == NULL) {
             printf("add failed: failed to reallocate buffer. \n");
@@ -71,7 +71,7 @@ int remove_element(slice *slc, size_t index) {
     }
 
     if ((slc->len - 1) < (slc->capacity * SHRINK_FACTOR)) {
-        int *new = (int *) realloc(slc->data, sizeof(int) * (slc->len - 1));
+        int *new = realloc(slc->data, sizeof(*new) * (slc->len - 1));
 
         if (new == NULL) {
             printf("failed to reallocate buffer \n");
@@ -120,7 +120,7 @@ int *at(slice *slc, int index) {
  * in case of failure return null pointer
  * */
 slice *concat(slice *dst_f, slice *dst_s) {
-    slice *new = (slice *) malloc(sizeof(slice));
+    slice *new = (slice *) malloc(sizeof(*new));
 
     if (new == NULL) {
         return NULL;
@@ -139,6 +139,52 @@ slice *concat(slice *dst_f, slice *dst_s) {
     }
 
     return new;
+}
+
+void free_slice(slice *slc) {
+    free(slc->data);
+    free(slc);
+}
+
+/**
+ * Filters the slice applying fn to each element
+ * returns NULL in case of failed reallocation
+ */
+slice *filter(slice *slc, filter_fn fn) {
+    size_t *remaining = malloc(sizeof(*remaining) * (slc->len));
+    int current = 0;
+
+    for (size_t i = 0; i < slc->len; i++) {
+        bool staying = fn((slc->data)[i], i);
+
+        if (staying) {
+            remaining[current] = i;
+            current++;
+        }
+    }
+
+    if (current == (int) (slc->len)) {
+        return slc;
+    }
+
+    int *new = calloc((size_t) current, sizeof(*new));
+
+    if (new == NULL) {
+        printf("failed to allocate space for filtered slice. \n");
+        return NULL;
+    }
+
+    for (size_t i = 0; i < (size_t) current; i++) {
+        new[i] = (slc->data)[remaining[i]];
+    }
+
+    free(slc->data);
+
+    slc->data = new;
+    slc->len = current;
+    slc->capacity = current;
+
+    return slc;
 }
 
 void print_slice(slice *slc) {
